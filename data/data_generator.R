@@ -83,6 +83,18 @@ Italian Halibut Chwoder
 Creamy Italian White Bean Soup
 
 
+culture_range = seq(0.5, 5, 0.5)
+entree_range = seq(0.5, 5, 0.5)
+entree_by_cultures = coeff * culture_range + coeff * entree_range
+
+
+
+
+
+
+
+
+
 persona_designer = function(score_range, portion_modifier, noise) {
   # score_range will be [1, 10]
   # portion_modifier will be [-1, 1]
@@ -93,3 +105,4 @@ persona_designer = function(score_range, portion_modifier, noise) {
          
 }
 sample(1: 10, 10)
+
