@@ -4,19 +4,40 @@ Given a group of Slack users, order the best group meal for them.
 """
 
 import os
+from collections import namedtuple
+from datetime import datetime
+from random import choice
 import time
-from nslackclient import SlackClient
+
+from slackclient import SlackClient
 
 # starterbot's ID as an environment variable
 BOT_ID = os.environ.get("BOT_ID")
 
 # constants
-AT_BOT = "<@" + BOT_ID + ">:"
-EXAMPLE_COMMAND = "do"
+AT_BOT = "<@" + str(BOT_ID) + ">:"
+BotDo = namedtuple("BotDo", ['response', 
+                            'action'])
+dialogue = {'lunch': BotDo("Did someone say lunch?", 
+                            None),
+          'me': BotDo(["Okay.", "Got it!"], 
+                        "TODO: add logic"),
+          'order': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
+                        "TODO: add logic"),
+          'go ahead': BotDo("Okay. I have order that meal. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
+           "TODO: add order logic"),
+          'test': BotDo("Command received", 
+                        None)
+          }
+
 
 # instantiate Slack & Twilio clients
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+lunchers = {} # People going to lunch
 
+def append_user(lunchers, user):
+    "Add"
+    return lunchers.add(users)
 
 def handle_command(command, channel):
     """
@@ -24,12 +45,23 @@ def handle_command(command, channel):
         are valid commands. If so, then acts on the commands. If not,
         returns back what it needs for clarification.
     """
-    response = "Not sure what you mean. Use the *" + EXAMPLE_COMMAND + \
-               "* command with numbers, delimited by spaces."
-    if command.startswith(EXAMPLE_COMMAND):
-        response = "Sure...write some more code then I can do that!"
-    slack_client.api_call("chat.postMessage", channel=channel,
-                          text=response, as_user=True)
+    try: 
+        bot_followup = next(v for k,v in dialogue.items() if command.find(k) >= 0) # Search for action words to find if the bot should do something
+        if isinstance(bot_followup.response, list):
+            response = choice(bot_followup.response)
+        else:
+            response = bot_followup.response
+        print(str(datetime.now())+": Family Bot says, '{}'".format(response))
+        
+        # TODO: do bot follow up action
+        print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
+    except StopIteration:
+        response = "Not sure what you mean. Try something else."
+
+    slack_client.api_call("chat.postMessage",
+                            channel=channel,
+                            text=response, 
+                            as_user=True)
 
 
 def parse_slack_output(slack_rtm_output):
@@ -49,9 +81,9 @@ def parse_slack_output(slack_rtm_output):
 
 
 if __name__ == "__main__":
-    READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
+    READ_WEBSOCKET_DELAY = .2 # Delay between reading from firehose
     if slack_client.rtm_connect():
-        print("StarterBot connected and running!")
+        print(str(datetime.now())+": Family Bot connected and running!")
         while True:
             command, channel = parse_slack_output(slack_client.rtm_read())
             if command and channel:
