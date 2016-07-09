@@ -1,6 +1,12 @@
 Family Style Bot 2.0 ideas
 =====
 
+- confirmation 
+    Family Style Bot:
+    Okay. I have Brian, Jon, Eugene, and Marvin for lunch. Is that right?
+
+    marvin:
+    yes
 - mix and match ordering
 - "cold start" problem
 - surprise me feature

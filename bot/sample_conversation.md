@@ -13,11 +13,7 @@ me
 marvin:
 me, too!
 
-Family Style Bot:
-Okay. I have Brian, Jon, Eugene, and Marvin for lunch. Is that right?
-
-marvin:
-yes
+brian: order please
 
 Family Style Bot:
 Sounds good. Based on your group preferences here are my suggestions:
