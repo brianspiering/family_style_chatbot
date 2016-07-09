@@ -4,7 +4,7 @@ Singapore Satay
 Singapore Chili Crabs
 Singapore Noodle Curry Shrimp
 Singapore Sling Cocktail
-Singapore laksa
+Singapore Laksa
 
 
 # Mexico
