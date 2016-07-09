@@ -31,9 +31,5 @@ go ahead
 
 Family Style Bot:
 Okay. I have order that meal. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.
-
-....
-
-Family Style Bot:
-I hope you enjoyed your meal. Here is a which poll to help do better next time...
+...
 
