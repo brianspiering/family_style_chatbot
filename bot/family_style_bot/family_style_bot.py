@@ -1,7 +1,11 @@
+"""Family Style Chat Bot: Group meal ordering made simple
+
+Given a group of Slack users, order the best group meal for them.
+"""
+
 import os
 import time
-from slackclient import SlackClient
-
+from nslackclient import SlackClient
 
 # starterbot's ID as an environment variable
 BOT_ID = os.environ.get("BOT_ID")
