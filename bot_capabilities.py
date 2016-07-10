@@ -4,7 +4,9 @@ confirmation_messages = ["Okay.",
                         "Got it!", 
                         "Okay-dookay", 
                         "Done.",
-                        "Awesome!"]
+                        "Awesome!",
+                        "Sweet!",
+                        "Can do."]
 
 init_convo_messages = ["Who wants nom noms?",
                      "Who's hungry?!",

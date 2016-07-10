@@ -95,18 +95,22 @@ def handle_command(channel, command, user_id):
             eaters = validate_eaters(eaters)
             eaters = [_.title() for _ in list(eaters)]
             print(eaters)
-            results_raw = model.recommend(eaters)
-            response = """Sounds good. Based on your group preferences here are my suggestions: 
-#1) {restaurant_1} (Resturant): {dishes_1}
-#2) {restaurant_2} (Resturant): {dishes_2}
-#3) {restaurant_3} (Resturant): {dishes_3}
+            try:
+                results_raw = model.recommend(eaters)
+                response = """Sounds good. Based on your group preferences here are my suggestions: 
+    #1) {restaurant_1} (Resturant): {dishes_1}
+    #2) {restaurant_2} (Resturant): {dishes_2}
+    #3) {restaurant_3} (Resturant): {dishes_3}
 
-Should I order for y'all?
-""".format(restaurant_1=results_raw[0][0], dishes_1=", ".join(results_raw[0][1]),
-          restaurant_2=results_raw[1][0], dishes_2=", ".join(results_raw[1][1]),
-         restaurant_3=results_raw[2][0], dishes_3=", ".join(results_raw[2][1])
+    Should I order for y'all?
+    """.format(restaurant_1=results_raw[0][0], dishes_1=" | ".join(results_raw[0][1]),
+          restaurant_2=results_raw[1][0], dishes_2=" | ".join(results_raw[1][1]),
+         restaurant_3=results_raw[2][0], dishes_3=" | ".join(results_raw[2][1])
           )
-            eaters = set()
+                eaters = set()
+            except TypeError:
+                print("Passed empty eater set")
+                response = "I don't know who wants to eat. Please tell me who is hungry."
         else:
             if isinstance(bot_followup.response, list): # Bot responding the conversation
                 response = choice(bot_followup.response)
@@ -147,7 +151,7 @@ def parse_slack_output(slack_rtm_output):
 
 
 if __name__ == "__main__":
-    READ_WEBSOCKET_DELAY = .2 # Delay between reading from firehose
+    READ_WEBSOCKET_DELAY = .01 # Delay between reading from firehose
     if slack_client.rtm_connect():
         print(str(datetime.now())+": Family Bot connected and running!")
         while True:
