@@ -33,22 +33,27 @@ dialogue = {'lunch': BotDo("Did someone say lunch?",
 
 # instantiate Slack & Twilio clients
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
-lunchers = {} # People going to lunch
+lunchers = set() # People going to lunch
 
 def append_user(lunchers, user):
     "Add"
     return lunchers.add(users)
 
-def handle_command(command, channel):
+def handle_command(**kwargs):
     """
         Receives commands directed at the bot and determines if they
         are valid commands. If so, then acts on the commands. If not,
         returns back what it needs for clarification.
     """
+    command = kwargs['command']
+    channel = kwargs['channel']
+    user = kwargs['user']
+
     try: 
         bot_followup = next(v for k,v in dialogue.items() if command.find(k) >= 0) # Search for action words to find if the bot should do something
         if isinstance(bot_followup.response, list):
             response = choice(bot_followup.response)
+            if 
         else:
             response = bot_followup.response
         print(str(datetime.now())+": Family Bot says, '{}'".format(response))
@@ -77,6 +82,9 @@ def parse_slack_output(slack_rtm_output):
                 # return text after the @ mention, whitespace removed
                 return output['text'].split(AT_BOT)[1].strip().lower(), \
                        output['channel']
+                return {'user': output['user'],
+                        'command': output['text'].split(AT_BOT)[1].strip().lower(),
+                        'channel': output['channel']}
     return None, None
 
 
@@ -85,9 +93,9 @@ if __name__ == "__main__":
     if slack_client.rtm_connect():
         print(str(datetime.now())+": Family Bot connected and running!")
         while True:
-            command, channel = parse_slack_output(slack_client.rtm_read())
-            if command and channel:
-                handle_command(command, channel)
+            output = parse_slack_output(slack_client.rtm_read())
+            if output['command'] and output['channel']:
+                handle_command(output)
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
         print("Connection failed. Invalid Slack token or bot ID?")
