@@ -3,7 +3,6 @@
 Given a group of Slack users, order the best group meal for them.
 """
 
-from collections import namedtuple
 from datetime import datetime
 import os
 import pickle
@@ -15,6 +14,7 @@ from credentials import credentials
 from slackclient import SlackClient
 from slacker import Slacker
 
+from bot_capabilities import bot_capabilities
 from group_recommender import GroupRecommender   
 
 slack_bot_token, bot_id = credentials.require(['slack_bot_token', 'bot_id'])
@@ -28,31 +28,10 @@ except:
 
 AT_BOT = "<@" + str(bot_id) + ">:"
 
-confirmation_messages = ["Okay.", "Got it!", "Okay-dookay", "I added you to the group", "Awesome"]
-
-# Load recommendation engine data
-data_items = pickle.load(open('data/user_by_cuisine_by_dish_ratings.pkl', 'rb'))
-data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
-model = GroupRecommender(data_items, data_cuisine)
-
-BotDo = namedtuple("BotDo", ['response', 
-                            'action'])
-dialogue = {'test': BotDo("Command received", 
-                            None),
-            'add_me': BotDo(confirmation_messages,
-                            "add_self_to_eaters"),
-            'add_person': BotDo(confirmation_messages, 
-                            "add_person_to_eaters"),
-            'fit_model': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
-                            "fit_model") # pass in list of users as arguments
-            }
-
-          #   'fit_model_current_eaters': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
-          #                   "TODO: add fit model logic"),
-          #   'order': BotDo("Okay. I have ordered the perfect meal for you. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
-          #                   "TODO: add order logic"),
-
-          # }
+# # Load recommendation engine data
+# data_items = pickle.load(open('data/user_by_cuisine_by_dish_ratings.pkl', 'rb'))
+# data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
+# model = GroupRecommender(data_items, data_cuisine)
 
 # instantiate Slack client
 # slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
@@ -71,7 +50,7 @@ def handle_command(channel, command, user_id):
 
     try: 
         # Search for action words to find if the bot should do something
-        bot_followup = next(v for k,v in dialogue.items() if command.find(k) >= 0) 
+        bot_followup = next(v for k,v in bot_capabilities.items() if command.find(k) >= 0) 
         
         # Bot doing an action behind the scenes of the conversation
         # print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
