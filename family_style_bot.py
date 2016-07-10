@@ -83,12 +83,18 @@ def handle_command(channel, command, user_id):
         elif bot_followup.action == "fit_model":
             eaters |= set(command.split()[1:])
             eaters = [_.title() for _ in list(eaters)]
-            result = model.recommend(eaters)
-            response = result # Bot responding the conversation
+            results_raw = model.recommend(eaters)
+            response = """#1) {restaurant_1} (Resturant): {dishes_1}
+#2) {restaurant_2} (Resturant): {dishes_2}
+#3) {restaurant_3} (Resturant): {dishes_3}
+""".format(restaurant_1=results_raw[0][0], dishes_1=", ".join(results_raw[0][1]),
+          restaurant_2=results_raw[1][0], dishes_2=", ".join(results_raw[1][1]),
+         restaurant_3=results_raw[2][0], dishes_3=", ".join(results_raw[2][1])
+          )
             eaters = set()
 
-        print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
-        print(str(datetime.now())+": Family Bot says, '{}'".format(response))
+        # print(str(datetime.now())+": Family Bot does - '{   }'".format(bot_followup.action))
+        # print(str(datetime.now())+": Family Bot says, '{}'".format(response))
         
 
     except StopIteration:
