@@ -56,14 +56,12 @@ class GroupRecommender(object):
 
 if __name__ == "__main__":
 
-    data_items = pickle.load(open("data/user_by_cuisine_by_dish_ratings.pkl", 'rb'))
     data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
-
     df_cuisine = pd.DataFrame(data_cuisine)
-
-    group_list = np.random.choice(df_cuisine["user_id"].unique(), size = 2, replace=False)
-
+    data_items = pickle.load(open("data/user_by_cuisine_by_dish_ratings.pkl", 'rb'))
     model = GroupRecommender(df_cuisine, data_items)
+    
+    group_list = np.random.choice(df_cuisine["user_id"].unique(), size = 2, replace=False)
     result = model.recommend(group_list)
 
     print("Group Order for " + ", ".join(group_list))
