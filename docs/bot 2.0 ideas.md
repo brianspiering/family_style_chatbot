@@ -16,3 +16,4 @@ Family Style Bot 2.0 ideas
     + Family Style Bot:
     I hope you enjoyed your meal. Here is a which poll to help do better next time...
 - add give me more / refresh
+- add pictures of entrées

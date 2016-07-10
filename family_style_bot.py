@@ -51,7 +51,7 @@ def handle_command(channel, command, user_id):
         returns back what it needs for clarification.
     """
     global lunchers
-    
+
     print(command, user_id)
 
     try: 
