@@ -53,7 +53,6 @@ def handle_command(**kwargs):
         bot_followup = next(v for k,v in dialogue.items() if command.find(k) >= 0) # Search for action words to find if the bot should do something
         if isinstance(bot_followup.response, list):
             response = choice(bot_followup.response)
-            if 
         else:
             response = bot_followup.response
         print(str(datetime.now())+": Family Bot says, '{}'".format(response))
@@ -80,12 +79,10 @@ def parse_slack_output(slack_rtm_output):
         for output in output_list:
             if output and 'text' in output and AT_BOT in output['text']:
                 # return text after the @ mention, whitespace removed
-                return output['text'].split(AT_BOT)[1].strip().lower(), \
-                       output['channel']
                 return {'user': output['user'],
                         'command': output['text'].split(AT_BOT)[1].strip().lower(),
                         'channel': output['channel']}
-    return None, None
+    return {"command": None, "channel":None}
 
 
 if __name__ == "__main__":
@@ -95,7 +92,8 @@ if __name__ == "__main__":
         while True:
             output = parse_slack_output(slack_client.rtm_read())
             if output['command'] and output['channel']:
-                handle_command(output)
+                print(str(datetime.now())+str(output))
+                handle_command(**output)
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
         print("Connection failed. Invalid Slack token or bot ID?")
