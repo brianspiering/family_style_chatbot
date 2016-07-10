@@ -3,10 +3,12 @@
 Given a group of Slack users, order the best group meal for them.
 """
 
-import os
 from collections import namedtuple
 from datetime import datetime
+import os
+import pickle
 from random import choice
+import sys
 import time
 
 from credentials import credentials
@@ -17,24 +19,38 @@ from group_recommender import GroupRecommender
 
 slack_bot_token, bot_id = credentials.require(['slack_bot_token', 'bot_id'])
 slack = Slacker(slack_bot_token)
+try: 
+    r = slack.api.test()
+    assert r.successful == True
+except:
+    print("Check your tokens!")
+    sys.exit(1)
+
+AT_BOT = "<@" + str(bot_id) + ">:"
 
 confirmation_messages = ["Okay.", "Got it!", "Okay-dookay", "I added you to the group", "Awesome"]
 
-# constants
-AT_BOT = "<@" + str(bot_id) + ">:"
+# Load recommendation engine data
+data_items = pickle.load(open('data/user_by_cuisine_by_dish_ratings.pkl', 'rb'))
+data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
+try:
+    model = GroupRecommender(data_items, data_cuisine)
+except RuntimeError:
+    sys.exit(1)
+
 BotDo = namedtuple("BotDo", ['response', 
                             'action'])
 dialogue = {'test': BotDo("Command received", 
                             None),
             'add_me': BotDo(confirmation_messages,
-                            "add_self_to_lunchers"),
+                            "add_self_to_eaters"),
             'add_person': BotDo(confirmation_messages, 
-                            "add_person_to_lunchers"),
+                            "add_person_to_eaters"),
             'fit_model': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
                             "fit_model") # pass in list of users as arguments
             }
 
-          #   'fit_model_current_lunchers': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
+          #   'fit_model_current_eaters': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
           #                   "TODO: add fit model logic"),
           #   'order': BotDo("Okay. I have ordered the perfect meal for you. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
           #                   "TODO: add order logic"),
@@ -44,7 +60,7 @@ dialogue = {'test': BotDo("Command received",
 # instantiate Slack client
 # slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 slack_client = SlackClient(slack_bot_token)
-lunchers = set() # People going to lunch
+eaters = set() # People going to lunch
 
 def handle_command(channel, command, user_id):
     """
@@ -52,7 +68,7 @@ def handle_command(channel, command, user_id):
         are valid commands. If so, then acts on the commands. If not,
         returns back what it needs for clarification.
     """
-    global lunchers
+    global eaters
 
     print(command, user_id)
 
@@ -62,22 +78,22 @@ def handle_command(channel, command, user_id):
         
         # Bot doing an action behind the scenes of the conversation
         # print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
-        if bot_followup.action == "add_self_to_lunchers": # TODO: make this an eval function
+        if bot_followup.action == "add_self_to_eaters": # TODO: make this an eval function
             user_id = user_id
-            if user_id: # Given user ID, find user name and add to lunchers"
+            if user_id: # Given user ID, find user name and add to eaters"
                 try:
                     r = slack.users.info(user_id)
                     user_real_name = r.body['user']['real_name'].lower()
-                    lunchers.add(user_real_name)
+                    eaters.add(user_real_name)
                     print(str(datetime.now())+": {} <--> '{}'".format(user_id, user_real_name))
                 except:
-                    print("ERROR: add someone to lunchers")
+                    print("ERROR: add someone to eaters")
             else:
                 print("ERROR "+user_id)
-        elif bot_followup.action == "add_person_to_lunchers":
-            lunchers.add(command.split(" ")[1]) # TODO: add logical to check for chat room membership
+        elif bot_followup.action == "add_person_to_eaters":
+            eaters.add(command.split(" ")[1]) # TODO: add logical to check for chat room membership
         elif bot_followup.action == "fit_model":
-            lunchers |= set(command.split()[1:])
+            eaters |= set(command.split()[1:])
 
         print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
         
