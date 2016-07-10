@@ -167,7 +167,7 @@ scipy=0.17.1=np111py27_1
 setuptools=23.0.0=py27_0
 simplegeneric=0.8.1=py27_1
 sip=4.16.9=py27_0
-slackclient==1.0.1=py27_0
+slackclient=1.0.1=py27_0
 snowballstemmer=1.2.1=py27_0
 sockjs-tornado=1.0.3=py27_0
 sphinx=1.4.1=py27_0
