@@ -213,7 +213,7 @@ ag65
 ag66
 ag68
 ag69
-aS'China'
+aS'Lime Tree Southeast Asian Kitchen'
 p72
 ag72
 ag72
@@ -223,26 +223,26 @@ ag72
 ag72
 ag72
 ag72
-aS'France'
+aS'La Urbana'
 p73
 ag73
 ag73
 ag73
 ag73
-aS'India'
+aS'Jayakarta Supreme'
 p74
 ag74
 ag74
 ag74
 ag74
 ag74
-aS'Indonesia'
+aS'Chapeau!'
 p75
 ag75
 ag75
 ag75
 ag75
-aS'Italy'
+aS'Shanghai Dumplings'
 p76
 ag76
 ag76
@@ -250,18 +250,18 @@ ag76
 ag76
 ag76
 ag76
-aS'Japan'
+aS'Saigon Cafe'
 p77
 ag77
 ag77
 ag77
 ag77
 ag77
-aS'Mexico'
+aS'Sanraku'
 p78
 ag78
 ag78
-aS'Pizza'
+aS'Little Delhi'
 p79
 ag79
 ag79
@@ -269,7 +269,7 @@ ag79
 ag79
 ag79
 ag79
-aS'Singapore'
+aS'Lers Ros Thai'
 p80
 ag80
 ag80
@@ -279,14 +279,14 @@ ag80
 ag80
 ag80
 ag80
-aS'Thailand'
+aS"Tommaso's Ristorante Italiano"
 p81
 ag81
 ag81
 ag81
 ag81
 ag81
-aS'Vietnam'
+aS'Pizza'
 p82
 ag82
 ag82
