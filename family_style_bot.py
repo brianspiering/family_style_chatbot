@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 import pickle
 from random import choice
+import string
 import sys
 import time
 
@@ -42,6 +43,11 @@ model = GroupRecommender(df_cuisine, data_items)
 slack_client = SlackClient(slack_bot_token)
 eaters = set() # People going to lunch
 
+def validate_eaters(eaters):
+    "Only allow valid eaters to be eaters"
+    valid_eaters = {'brian', 'eugene', 'anne'} 
+    return {_ for _ in eaters if _ in valid_eaters}
+
 def handle_command(channel, command, user_id):
     """
         Receives commands directed at the bot and determines if they
@@ -59,13 +65,12 @@ def handle_command(channel, command, user_id):
         # Bot doing an action behind the scenes of the conversation
         # print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
         if bot_followup.action == "add_self_to_eaters": # TODO: make this an eval function
-            user_id = user_id
             if user_id: # Given user ID, find user name and add to eaters"
                 try:
                     r = slack.users.info(user_id)
-                    user_real_name = r.body['user']['real_name'].lower()
-                    eaters.add(user_real_name)
-                    print(str(datetime.now())+": {} <--> '{}'".format(user_id, user_real_name))
+                    first_name = r.body['user']['profile']['first_name'].lower()
+                    eaters.add(first_name)
+                    print(str(datetime.now())+": {} <--> '{}'".format(user_id, first_name))
                 except:
                     print("ERROR: add someone to eaters")
             else:
@@ -76,15 +81,20 @@ def handle_command(channel, command, user_id):
             else:
                 response = bot_followup.response
         elif bot_followup.action == "add_person_to_eaters":
-            eaters.add(command.split(" ")[1]) # TODO: add logical to check for chat room membership
-
+            l = command.split(" ")
+            current_eater = l[l.index('add')+1]
+            eaters.add(current_eater) # TODO: add logical to check that we have data
+            print(eaters)
             if isinstance(bot_followup.response, list): # Bot responding the conversation
                 response = choice(bot_followup.response)
             else:
                 response = bot_followup.response
         elif bot_followup.action == "fit_model":
-            eaters |= set(command.split()[1:])
+            # eaters |= set(command.split()[1:]) # parse command line args
+            print(eaters)
+            eaters = validate_eaters(eaters)
             eaters = [_.title() for _ in list(eaters)]
+            print(eaters)
             results_raw = model.recommend(eaters)
             response = """Sounds good. Based on your group preferences here are my suggestions: 
 #1) {restaurant_1} (Resturant): {dishes_1}
@@ -97,6 +107,11 @@ Should I order for y'all?
          restaurant_3=results_raw[2][0], dishes_3=", ".join(results_raw[2][1])
           )
             eaters = set()
+        else:
+            if isinstance(bot_followup.response, list): # Bot responding the conversation
+                response = choice(bot_followup.response)
+            else:
+                response = bot_followup.response
 
         # print(str(datetime.now())+": Family Bot does - '{   }'".format(bot_followup.action))
         # print(str(datetime.now())+": Family Bot says, '{}'".format(response))
@@ -124,7 +139,10 @@ def parse_slack_output(slack_rtm_output):
         for output in output_list:
             if output and 'text' in output and AT_BOT in output['text']:
                 # return text after the @ mention, whitespace removed
-                return output['channel'], output['text'].split(AT_BOT)[1].strip().lower(), output['user'],
+                s = output['text'].split(AT_BOT)[1].strip().lower()
+                exclude = set(string.punctuation)
+                s = ''.join(ch for ch in s if ch not in exclude)
+                return output['channel'], s, output['user'],
     return None, None, None
 
 

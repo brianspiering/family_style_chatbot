@@ -6,7 +6,7 @@ confirmation_messages = ["Okay.",
                         "Done.",
                         "Awesome!"]
 
-init_convo_messages = ["Did someone say lunch!?",
+init_convo_messages = ["Who wants nom noms?",
                      "Who's hungry?!",
                      "Sounds like someone's hungry! Who's in?"]
 
@@ -36,6 +36,6 @@ bot_capabilities = {'test': BotDo("Command received",
                             None),
             'suggest': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
                             "fit_model"), # pass in list of users as arguments
-            'order': BotDo("Okay. I have ordered that for you. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
+            'order': BotDo("Okay. I have ordered that for you. Here is the tracking number #867-5309. I'll keep you posted and let you know when it arrives.",
                             None),
 }
