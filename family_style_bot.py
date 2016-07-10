@@ -11,6 +11,7 @@ import sys
 import time
 
 from credentials import credentials
+import pandas as pd
 from slackclient import SlackClient
 from slacker import Slacker
 
@@ -28,10 +29,11 @@ except:
 
 AT_BOT = "<@" + str(bot_id) + ">:"
 
-# # Load recommendation engine data
-# data_items = pickle.load(open('data/user_by_cuisine_by_dish_ratings.pkl', 'rb'))
-# data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
-# model = GroupRecommender(data_items, data_cuisine)
+# Load recommendation engine data
+data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
+df_cuisine = pd.DataFrame(data_cuisine)
+data_items = pickle.load(open("data/user_by_cuisine_by_dish_ratings.pkl", 'rb'))
+model = GroupRecommender(df_cuisine, data_items)
 
 # instantiate Slack client
 # slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
@@ -66,18 +68,26 @@ def handle_command(channel, command, user_id):
                     print("ERROR: add someone to eaters")
             else:
                 print("ERROR "+user_id)
+
+            if isinstance(bot_followup.response, list): # Bot responding the conversation
+                response = choice(bot_followup.response)
+            else:
+                response = bot_followup.response
         elif bot_followup.action == "add_person_to_eaters":
             eaters.add(command.split(" ")[1]) # TODO: add logical to check for chat room membership
+
+            if isinstance(bot_followup.response, list): # Bot responding the conversation
+                response = choice(bot_followup.response)
+            else:
+                response = bot_followup.response
         elif bot_followup.action == "fit_model":
             eaters |= set(command.split()[1:])
+            eaters = [_.title() for _ in list(eaters)]
+            result = model.recommend(eaters)
+            response = result # Bot responding the conversation
+            eaters = set()
 
         print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
-        
-        # Bot responding the conversation
-        if isinstance(bot_followup.response, list):
-            response = choice(bot_followup.response)
-        else:
-            response = bot_followup.response
         print(str(datetime.now())+": Family Bot says, '{}'".format(response))
         
 
