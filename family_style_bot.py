@@ -15,6 +15,8 @@ import pandas as pd
 from slackclient import SlackClient
 from slacker import Slacker
 
+import bot_capabilities
+bot_capabilities = reload(bot_capabilities)
 from bot_capabilities import bot_capabilities
 from group_recommender import GroupRecommender   
 
@@ -84,9 +86,12 @@ def handle_command(channel, command, user_id):
             eaters |= set(command.split()[1:])
             eaters = [_.title() for _ in list(eaters)]
             results_raw = model.recommend(eaters)
-            response = """#1) {restaurant_1} (Resturant): {dishes_1}
+            response = """Sounds good. Based on your group preferences here are my suggestions: 
+#1) {restaurant_1} (Resturant): {dishes_1}
 #2) {restaurant_2} (Resturant): {dishes_2}
 #3) {restaurant_3} (Resturant): {dishes_3}
+
+Should I order for y'all?
 """.format(restaurant_1=results_raw[0][0], dishes_1=", ".join(results_raw[0][1]),
           restaurant_2=results_raw[1][0], dishes_2=", ".join(results_raw[1][1]),
          restaurant_3=results_raw[2][0], dishes_3=", ".join(results_raw[2][1])
