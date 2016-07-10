@@ -33,10 +33,7 @@ confirmation_messages = ["Okay.", "Got it!", "Okay-dookay", "I added you to the 
 # Load recommendation engine data
 data_items = pickle.load(open('data/user_by_cuisine_by_dish_ratings.pkl', 'rb'))
 data_cuisine = pickle.load(open("data/user_by_cuisine_ratings.pkl", 'rb'))
-try:
-    model = GroupRecommender(data_items, data_cuisine)
-except RuntimeError:
-    sys.exit(1)
+model = GroupRecommender(data_items, data_cuisine)
 
 BotDo = namedtuple("BotDo", ['response', 
                             'action'])
