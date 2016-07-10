@@ -38,6 +38,7 @@ dill=0.2.5=py27_0
 entrypoints=0.2.2=py27_0
 funcsigs=1.0.2=py27_0
 functools32=3.2.3.2=py27_0
+GraphLab-Create==2.0.1=py27_0
 ipywidgets=4.1.1=py27_0
 jsonschema=2.5.1=py27_0
 jupyter_client=4.3.0=py27_0

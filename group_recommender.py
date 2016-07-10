@@ -1,10 +1,15 @@
-import graphlab as gl
-import pickle
-import pandas as pd
-import numpy as np
-from collections import Counter
+""
 
-class group_recommender(object):
+from collections import Counter
+import pickle
+
+import graphlab as gl
+import numpy as np
+import pandas as pd
+
+class GroupRecommender(object):
+    ""
+    
     def __init__(self, cuisine_sf, dict_cuisine_items):
         self.cuisine = gl.SFrame(cuisine_sf)
         self.cuisine_items = dict_cuisine_items
@@ -61,8 +66,7 @@ if __name__ == "__main__":
     model = group_recommender(df_cuisine, data_items)
     result = model.recommend(group_list)
 
-    print "Group Order for " + ", ".join(group_list)
-    print "Computing recommendation..."
-    print "Recommendation: "
-    print result
-
+    print("Group Order for " + ", ".join(group_list))
+    print("Computing recommendation...")
+    print("Recommendation: ")
+    print(result)

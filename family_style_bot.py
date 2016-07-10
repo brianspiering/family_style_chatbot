@@ -13,6 +13,8 @@ from credentials import credentials
 from slackclient import SlackClient
 from slacker import Slacker
 
+from group_recommender import GroupRecommender   
+
 slack_bot_token, bot_id = credentials.require(['slack_bot_token', 'bot_id'])
 slack = Slacker(slack_bot_token)
 
