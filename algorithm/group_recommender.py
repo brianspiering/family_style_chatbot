@@ -17,39 +17,37 @@ class group_recommender(object):
                                            operations={'rating': gl.aggregate.MEAN('rating')})  
         
         sf_avg_user.add_column(gl.SArray([group_name] * len(sf_avg_user)), "user_id")
-        #print sf_avg_user
+#         print sf_avg_user
         
         sf_new = self.cuisine.append(sf_avg_user)
         
         model = gl.recommender.create(sf_new, target='rating')
     
         results = model.recommend([group_name], exclude_known=False)
-        #print results
-        result_cuisine = results["item_id"][0]
+#         print results
+        result_cuisine = results["item_id"][:3]
+    
+        option_list = []
+        for cuisine in result_cuisine:
             
-        sf_items = gl.SFrame(self.cuisine_items[result_cuisine])
-        model_items = gl.recommender.create(sf_items, target='rating')
-        
-        results_items = model_items.recommend(group_list, exclude_known=False, k = 2)
-        #print results_items
-        
-        
-        if result_cuisine == "Pizza":
-            group_size = len(group_list)
-            num_pizza = int(group_size / 1.5)
-            item_results = [item for item, count in Counter(results_items["item_id"]).most_common()][:num_pizza]
-            return ("Everyone", item_results)
-        
-        else:
-            name_items = results_items[["user_id", "item_id"]].to_numpy().tolist()
+            sf_items = gl.SFrame(self.cuisine_items[cuisine])
+            model_items = gl.recommender.create(sf_items, target='rating')
 
-            recommendations = []
-            for name in group_list:
-                recommendations.append((name,
-                                        map(lambda (n, meal): meal,
-                                            filter(lambda (n, meal): n == name , name_items))))
-            return recommendations
+            results_items = model_items.recommend(group_list, exclude_known=False, k = 2)
+    #         print results_items
+                
+            if cuisine == "Pizza":
+                group_size = len(group_list)
+                num_pizza = int(group_size / 1.5)
+                item_results = [item for item, count in Counter(results_items["item_id"]).most_common()][:num_pizza]
+                option_list.append(("Pizza Party!", item_results))
+        
+            else:
+                group_size = len(group_list)
+                item_results = [item for item, count in Counter(results_items["item_id"]).most_common()][:group_size]
+                option_list.append((cuisine, item_results))
 
+        return option_list
 
 if __name__ == "__main__":
 
