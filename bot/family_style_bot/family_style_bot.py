@@ -18,20 +18,19 @@ BOT_ID = os.environ.get("BOT_ID")
 AT_BOT = "<@" + str(BOT_ID) + ">:"
 BotDo = namedtuple("BotDo", ['response', 
                             'action'])
-dialogue = {'lunch': BotDo("Did someone say lunch?", 
+dialogue = {'start': BotDo("Who is hungry?", 
                             None),
-          'me': BotDo(["Okay.", "Got it!"], 
-                        "TODO: add logic"),
-          'order': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
-                        "TODO: add logic"),
-          'go ahead': BotDo("Okay. I have order that meal. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
-           "TODO: add order logic"),
-          'test': BotDo("Command received", 
-                        None)
+            'add_me': BotDo(["Okay.", "Got it!"], 
+                            "TODO: add logic"),
+            'fit_model': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
+                            "TODO: add fit model logic"),
+            'order': BotDo("Okay. I have order that meal. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
+                            "TODO: add order logic"),
+            'test': BotDo("Command received", 
+                            None)
           }
 
-
-# instantiate Slack & Twilio clients
+# instantiate Slack client
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 lunchers = set() # People going to lunch
 
@@ -92,7 +91,7 @@ if __name__ == "__main__":
         while True:
             output = parse_slack_output(slack_client.rtm_read())
             if output['command'] and output['channel']:
-                print(str(datetime.now())+str(output))
+                print(str(datetime.now())+' '+str(output))
                 handle_command(**output)
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
