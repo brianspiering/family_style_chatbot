@@ -24,7 +24,7 @@ dialogue = {'start': BotDo("Who is hungry?",
                             "TODO: add logic"),
             'fit_model': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
                             "TODO: add fit model logic"),
-            'order': BotDo("Okay. I have order that meal. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
+            'order': BotDo("Okay. I have ordered the perfect meal for you. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
                             "TODO: add order logic"),
             'test': BotDo("Command received", 
                             None)
