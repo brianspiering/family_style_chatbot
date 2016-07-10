@@ -37,9 +37,15 @@ dialogue = {'start': BotDo("Who is hungry?",
 slack_client = SlackClient(slack_bot_token)
 lunchers = set() # People going to lunch
 
-def append_user(user_id):
+def add_user_to_lunchers(user_id):
     "Given user ID, find user name and add to lunchers"
-    user_real_name = slack.foo # slack https://github.com/os/slacker
+    try:
+        response = slack.users.info(user_id)
+        user_real_name = response.body['user']['real_name'].lower()
+        print(str(datetime.now())+": {} <--> '{}'".format(user_id, user_real_name))
+    except:
+        print("ERROR: add_user_to_lunchers")
+
     return lunchers.add(user_real_name)
 
 def handle_command(**kwargs):
@@ -50,7 +56,7 @@ def handle_command(**kwargs):
     """
     command = kwargs['command']
     channel = kwargs['channel']
-    user = kwargs['user']
+    user_id = kwargs['user']
 
     try: 
         bot_followup = next(v for k,v in dialogue.items() if command.find(k) >= 0) # Search for action words to find if the bot should do something
@@ -64,7 +70,7 @@ def handle_command(**kwargs):
         
         # Bot doing an action behind the conversation
         if bot_followup.action == add_user_to_lunchers: # TODO: make this an eval function
-            add_user_to_lunchers(output['user'])
+            add_user_to_lunchers(user_id)
         print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
     
     except StopIteration:
