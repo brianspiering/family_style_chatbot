@@ -9,19 +9,21 @@ from datetime import datetime
 from random import choice
 import time
 
+from credentials import credentials
 from slackclient import SlackClient
+from slacker import Slacker
 
-# starterbot's ID as an environment variable
-BOT_ID = os.environ.get("BOT_ID")
+slack_bot_token, bot_id = credentials.require(['slack_bot_token', 'bot_id'])
+slack = Slacker(slack_bot_token)
 
 # constants
-AT_BOT = "<@" + str(BOT_ID) + ">:"
+AT_BOT = "<@" + str(bot_id) + ">:"
 BotDo = namedtuple("BotDo", ['response', 
                             'action'])
 dialogue = {'start': BotDo("Who is hungry?", 
                             None),
             'add_me': BotDo(["Okay.", "Got it!"], 
-                            "TODO: add logic"),
+                            "add_user_to_lunchers"),
             'fit_model': BotDo(["Sounds good. Based on your group preferences here are my suggestions: ..."], 
                             "TODO: add fit model logic"),
             'order': BotDo("Okay. I have ordered the perfect meal for you. Here is the tracking number #867-5309. I'll keep you posted and let you when it arrives.",
@@ -31,12 +33,14 @@ dialogue = {'start': BotDo("Who is hungry?",
           }
 
 # instantiate Slack client
-slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+# slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+slack_client = SlackClient(slack_bot_token)
 lunchers = set() # People going to lunch
 
-def append_user(lunchers, user):
-    "Add"
-    return lunchers.add(users)
+def append_user(user_id):
+    "Given user ID, find user name and add to lunchers"
+    user_real_name = slack.foo # slack https://github.com/os/slacker
+    return lunchers.add(user_real_name)
 
 def handle_command(**kwargs):
     """
@@ -50,14 +54,19 @@ def handle_command(**kwargs):
 
     try: 
         bot_followup = next(v for k,v in dialogue.items() if command.find(k) >= 0) # Search for action words to find if the bot should do something
+
+        # Bot responding the conversation
         if isinstance(bot_followup.response, list):
             response = choice(bot_followup.response)
         else:
             response = bot_followup.response
         print(str(datetime.now())+": Family Bot says, '{}'".format(response))
         
-        # TODO: do bot follow up action
+        # Bot doing an action behind the conversation
+        if bot_followup.action == add_user_to_lunchers: # TODO: make this an eval function
+            add_user_to_lunchers(output['user'])
         print(str(datetime.now())+": Family Bot does - '{}'".format(bot_followup.action))
+    
     except StopIteration:
         response = "Not sure what you mean. Try something else."
 

@@ -28,6 +28,7 @@ clyent=1.2.2=py27_0
 backports_abc=0.4=py27_0
 cloudpickle=0.2.1=py27_0
 colorama=0.3.7=py27_0
+credentials=1.1=py27_0
 cycler=0.10.0=py27_0
 cython=0.24=py27_0
 cytoolz=0.8.0=py27_0
@@ -168,6 +169,7 @@ setuptools=23.0.0=py27_0
 simplegeneric=0.8.1=py27_1
 sip=4.16.9=py27_0
 slackclient=1.0.1=py27_0
+slacker=0.9.21=py27_0
 snowballstemmer=1.2.1=py27_0
 sockjs-tornado=1.0.3=py27_0
 sphinx=1.4.1=py27_0
