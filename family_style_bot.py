@@ -45,7 +45,7 @@ eaters = set() # People going to lunch
 
 def validate_eaters(eaters):
     "Only allow valid eaters to be eaters"
-    valid_eaters = {'brian', 'eugene', 'anne'} 
+    valid_eaters = {'brian', 'eugene', 'anne', 'david', 'jon', 'marvin', 'leah', 'michelle', 'samatha'} 
     return {_ for _ in eaters if _ in valid_eaters}
 
 def handle_command(channel, command, user_id):
